@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		#info{
+			width: 300px;
+			height: 300px;
+			overflow:auto;
+			border:1px solid;
+		}
+	</style>
+</head>
+<body>
+	<div id="info"></div>
+	<input type="text" id="nickname" placeholder="昵称"><br/>
+	<input type="text" id="msg" placeholder="请输入你发送的消息内容">
+	<input type="button" id="send" value="发送">
+</body>
+<script type="text/javascript" src="js/tools.js"></script>
+<script type="text/javascript">
+	$("#send").onclick=function() {
+		ajax({
+			type:"get",
+			url:"chat.php",
+			data:{nickname:$("#nickname").value,msg:$("#msg").value},
+			success:function(){
+				var html="<div>"+$("#nickname").value+"说"+$("#msg").value+"</div>"	;
+				$("#info").innerHTML+=html;
+				$("#msg").value="";
+				}
+		})
+	}
+</script>
+</html>

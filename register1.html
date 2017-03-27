@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<form action="" method="">
+		<input type="text" placeholder="用户名" name="username" id="username"><span id="username-info"></span><br/>
+		<div id="username-suggest" style="display:none;border:1px solid #f00;width:100px;"></div>
+		<input type="password" placeholder="密码" name="password"><br/>
+		<input type="submit" value="注册" ><br/>
+		
+	</form>
+</body>
+<script type="text/javascript" src="js/tools.js"></script>
+<script type="text/javascript">
+	$("#username").onblur=function() {
+		var xhr=new XMLHttpRequest();
+		xhr.open("get","checkusername1.php?username="+this.value,true);
+		xhr.send();
+		xhr.onreadystatechange=function(){
+			if(xhr.readyState===4){
+				if(xhr.status===200){
+					var txt=xhr.responseText;
+					var data=JSON.parse(txt);
+					if(data.success==1){
+						$("#username-info").innerHTML="用户名已被占用";
+						var  _suggest=date.morePin,
+						_html="";
+						_suggest.forEach(function(name){
+							_html+="<div>"+name+"</div>"
+						})
+					}
+				}
+			}
+		}
+
+	}
+	
+</script>
+</html>

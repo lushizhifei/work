@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<input type="text" id="city"/>
+	<button id="btn">查询天气</button>
+	<div id="info"></div>
+	<script type="text/javascript" src="js/tools.js"></script>
+	<script type="text/javascript">
+		$("#btn").onclick=function(){
+			var _url="https://route.showapi.com/9-2";
+			ajax({
+				
+				url:_url,
+				dataType:"json",
+				data:{
+
+					area : $("#city").value,
+					showapi_appid:"33237",
+					showapi_sign:"ee80a64dcd7f43e488e748df7f27f5d3"
+
+				},
+				
+				success:function(data){
+					 
+					var todayForcast=data.showapi_res_body.f1;
+					var _day = todayForcast.day,
+						_day_temp = todayForcast.day_air_temperature,
+						_night_temp = todayForcast.night_air_temperature,
+						_day_air = todayForcast.day_weather,
+						_day_air_img = todayForcast.day_weather_pic,
+						_night_air = todayForcast.night_weather,
+						_night_air_img = todayForcast.night_weather_pic,
+						_day_wind_dir = todayForcast.day_wind_direction;
+
+						
+
+
+						var reg=/^(\d{4})(\d{2})(\d{2})$/;
+						var arr=reg.exec(_day);
+						_day=arr[1]+"年"+arr[2]+"月"+arr[3]+"日";
+
+
+						$("#info").innerHTML = "<div>预报日期："+_day+"，白天气温："+_day_temp+"，白天天气："+_day_air+" <img src='"+_day_air_img+"'>，夜晚气温："+_night_temp+"，夜晚天气："+_night_air+" <img src='"+_night_air_img+"'>，白天风向："+_day_wind_dir+"</div>";
+
+				}
+			})
+		}
+	</script>
+</body>
+
+</html>

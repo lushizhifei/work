@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>最短瀑布流加载更多</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		#container{width: 90%;margin: 0 auto;position: relative;}
+		#container .img{width: 220px;padding: 5px;border:1px solid #ccc;border-radius:5px;margin-top:10px;}
+		#container .img img{width: 220px;}
+
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div class="img"><img src="imgs/1.jpg" ></div>
+		<div class="img"><img src="imgs/2.jpg" ></div>
+		<div class="img"><img src="imgs/3.jpg" ></div>
+		<div class="img"><img src="imgs/4.jpg" ></div>
+		<div class="img"><img src="imgs/5.jpg" ></div>
+		<div class="img"><img src="imgs/6.jpg" ></div>
+		<div class="img"><img src="imgs/7.jpg" ></div>
+		<div class="img"><img src="imgs/8.jpg" ></div>
+		<div class="img"><img src="imgs/9.jpg" ></div>
+	</div>
+	<div id="box" style="display:none"></div>
+	<script type="text/javascript" src="js/tools.js"></script>
+	<script type="text/javascript">
+		var containerWidth=$("#container").clientWidth,
+			divs=$(".img"),
+			len=divs.length,
+			divWidth=divs[0].offsetWidth,
+			cols=Math.floor(containerWidth/divWidth),
+			spacing=(containerWidth-cols*divWidth)/(cols+1),
+			position=[];
+		divs=Array.from(divs);
+		$("container").innerHTML="";
+		var html="";
+		for(var i=0;i<cols;i++){
+			html+="<div class='box' style='width:"+divWidth+"px;margin-left:"+spacing+"px;display:inline-block;vertical-align:top;'></div>"
+		}
+		$("#container").innerHTML+=html;
+		var boxes=$(".box");
+		for(var i=0,len=divs.length;i<len;i++){
+			if(i<clos)
+				position.push(0);
+			var currCol=shortest(position);
+			boxes[currCol].appendChild(divs[i]);
+			position[currCol]=boxes[currCol].offsetHeight;
+		}
+		html="";
+		for(var i=10;i<=36;i++){
+			html+='<div class="img"><img src="img/'+i+'.jpg"></div>';
+		}
+		$("#box").innerHTML=html;
+		divs=$(".img",$("#box"));
+		divs=Array.from(divs);
+		$("#box").innerHTML="";
+		divs.forEach(function(div) {
+			$("img",div)[0].onload=function(){
+				var currCol=shortest(position);
+				boxes[currCol].appendChild(div);
+				position[currCol]=boxes[currCol].offsetHeight;
+			}
+		})
+		var isLoading=false;
+		window.onscroll=function(){
+			var _scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+			var index=shortest(position),
+				winHeight=document.documentElement.clientHeight||document.body.clientHeight;
+			if(_scrollTop>position[index]-winHeight&&!isLoading){
+				isLoading=true;
+				ajax({
+					url:"http://route.showapi.com/959-2?showapi_appid=29550&showapi_sign=e48f5d7e50334ffca41693016df78054&num=10&id=/qunzhuang/shuiqun/5681.html",
+					dataType:"json",
+					success:function(data){
+						isLoading=false;
+						var arr=data.showapi_res_body.imgList;
+						var html="";
+						arr.forEach(function(imgSrc){
+							html+='<div class="img"><img src="'+imgSrc+'"></div>'
+						});
+						$("#box").innerHTML=html;
+						var divs=$(".img",$("#box"));
+						divs=Array.from(divs);
+						$("#box").innerHTML="";
+						divs.forEach(function(div){
+						$("img",div)[0].onload=function(){
+							var currCol=shortest(position);
+							boxes[currCol].appendChild(div);
+							position[currCol]=boxes[currCol].offsetHeight;
+						}
+						})
+					}
+				})
+			}
+		}
+		function shortest(position){
+			var min=position[0],index=0;
+			for(var i=1,len=position.length;i<len;i++){
+				if(min>position[i]){
+					min=position[i];
+					index=i;
+				}
+			}
+			return index;
+		}
+	</script>
+</body>
+</html>
